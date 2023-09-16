@@ -1,0 +1,35 @@
+{% extends "Charts/base.html" %}
+{% block content %}
+
+<div class="card" style="width: 20rem;position:absolute; top:70px; left:10px;z-index:1">
+  <div class="card-body">
+    <div class="list-group">
+      {% for button in button_list %}
+      {% if button.0 == pageName %}
+      <a href={% url 'profile' chartName=button.0 %} class="list-group-item list-group-item-action active">
+        {{button.1}} 
+      </a>
+      {% else %}
+      <a  class="list-group-item list-group-item-action" href={% url 'profile' chartName=button.0 %}>
+        {{button.1}} 
+      </a>
+      {% endif %}
+      {% endfor %}
+
+    </div>
+
+  </div>
+</div>
+<div class="card" style="width: 50rem;position:absolute; top:70px; left:350px;z-index:1">
+  <div class="card-header">
+    <h1> {{user.first_name}} {{user.last_name}}</h1>
+  </div>
+  {% if pageName == 'hours-worked' %}
+  {% include "Charts/profileIncludes/workedHoursPage.html" %}
+  {% elif pageName == 'hours-slept' %}
+  {% include "Charts/profileIncludes/sleptHoursPage.html" %}
+  {% elif pageName == "weekly-jurnals" %}
+  {% include "Charts/profileIncludes/jurnalsPage.html" %}
+  {% endif %}
+</div>
+{% endblock %}
