@@ -34,7 +34,7 @@
     </div>
 
     {% if edit == "true" %}
-    <form action="/upload_jurnal" method="post" id="jurnalForm">
+    <form action="/charts/upload_journal" method="post" id="jurnalForm">
       {% csrf_token %}
       {{WeeklyJurnalForm }}
 
@@ -46,14 +46,14 @@
       };
     </script>
     <label for="my-dropzone">7. What was your schedule this week (screenshot from Google Calendar)?</label>
-    <form action="/upload_calendar_image" method="post" class="dropzone" id="my-dropzone"> {% csrf_token %}
+    <form action="/charts/upload_calendar_image" method="post" class="dropzone" id="my-dropzone"> {% csrf_token %}
 
     </form>
     <img style="width: 45rem; height: 30rem;" src="{{ calendar_image }}" alt="you did not add any image">
     <button type="submit" form="jurnalForm">Submit</button>
     {% else %}
-    <div class="row">
-    <a class="btn btn-dark" role="button" href="/edit">edit</a> </div>
+    <div class="row">  
+    <a class="btn btn-dark" role="button" href="/charts/edit" >edit</a> </div>      
     <h6>
       <p>{{ questions.0 }}</p>
     </h6>
@@ -97,7 +97,7 @@
       let username = '{{user.username}}'
       let date = '{{date}}'
     </script>
-    <script src="{% static 'Charts\jurnals.js' %}"></script>
+    <script src="{% static 'Charts\journals.js' %}"></script>
 
 
 

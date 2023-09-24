@@ -2,11 +2,11 @@
 let apiData="test"
 $.ajax({             
  method: "GET",
- url :'/get_data_for_work_chart/'+username+'/'+date ,
+ url :'/charts/get_data_for_work_chart/'+username+'/'+date ,  
  success: function(data){  
 
 let daily_charts_data=data[0]
-let week_charts_data=data[1]
+let week_charts_data=data[1]  
 console.log(data)
 const ctx = document.getElementById('dailyChart');
 const secondctx=document.getElementById('weekleyChart')  

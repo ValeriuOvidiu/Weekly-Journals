@@ -2,7 +2,7 @@
 let apiData="test"
 $.ajax({      
  method: "GET",
- url :'/get_data_for_sleep_chart/'+username+'/'+date ,
+ url :'/charts/get_data_for_sleep_chart/'+username+'/'+date ,  
  success: function(data){  
 
 let daily_charts_data=data[0]

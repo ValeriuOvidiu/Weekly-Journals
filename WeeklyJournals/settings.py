@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Charts',   
     'bootstrap5',
+    "accounts",  
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,15 +66,18 @@ ROOT_URLCONF = 'WeeklyJournals.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'Template')],   
+        'DIRS': [ os.path.join(BASE_DIR, 'WeeklyJournals','templates'),  # Directorul rădăcină al proiectului
+            os.path.join(BASE_DIR, 'accounts', 'templates'),  # Directorul "templates" al aplicației "accounts"
+            os.path.join(BASE_DIR, 'Charts', 'templates',),  # Directorul "templates" al aplicației "charts"
+        ],     
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',  
+                'django.template.context_processors.debug',    
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+                'django.contrib.messages.context_processors.messages',     
+            ],   
         },
     },
 ]

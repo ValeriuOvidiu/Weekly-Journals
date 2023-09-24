@@ -1,4 +1,4 @@
-const endpoint = '/jurnals_data/' + username + '/' + date
+const endpoint = '/charts/journals_data/' + username + '/' + date  
 let apiData = "test"
 const monthsOfYear = [
   { name: 'January', number: '01' },
@@ -41,8 +41,9 @@ $.ajax({
       weekTotalWork2+=daily_worked_data[1][i]
       weekTotalSleep2+=week_slept_data[1][i]
     }
-    weekTotalWork.innerHTML= "Week total worked hours = "+weekTotalWork2  
-    weekTotalSleep.innerHTML= "Week total slept hours = "+weekTotalSleep2 
+    
+    weekTotalWork.innerHTML= "Week total worked hours = "+weekTotalWork2 
+    weekTotalSleep.innerHTML= "Week total slept hours = "+weekTotalSleep2
 
     let endDate = daily_worked_data[0][6]
     let beginingDate = daily_worked_data[0][0]

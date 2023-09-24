@@ -1,41 +1,8 @@
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
-from django.forms.fields import DateField
-from django.core.exceptions import ValidationError
-from Charts.models import WeeklyJurnalModel
-from datetime import datetime, timedelta
-
-
-
-class userForm(forms.Form):
-    first_name = forms.CharField( min_length=1,widget=forms.TextInput(attrs={"class": "form-control",'placeholder': 'Enter your first name'}))  
-    last_name = forms.CharField( min_length=1,widget=forms.TextInput(attrs={"class": "form-control",'placeholder': 'Enter your last name'}) ) 
-    email = forms.EmailField(min_length=1,widget=forms.EmailInput(attrs={"class": "form-control",'placeholder': 'Enter your email'}))
-    password = forms.CharField(
-         widget=forms.PasswordInput(attrs={"class": "form-control",'placeholder': 'Choose a password'}), min_length=6
-    )
-    confirm_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": "form-control",'placeholder': 'Confirm the password'}), min_length=6  
-    )
-
-
-class codeForm(forms.Form):
-    code = forms.IntegerField(
-        help_text="introduce text", max_value=9999, min_value=1000 , widget=forms.PasswordInput(attrs={"class": "form-control"}))
-    
-
 
 class DateInputt(forms.DateInput):
     input_type='date'
-
-   
-class loginForm(forms.Form):
-    email= forms.EmailField(min_length=1,widget=forms.EmailInput(attrs={"class": "form-control",'placeholder': 'Enter your email'}))
-    password = forms.CharField(
-         widget=forms.PasswordInput(attrs={"class": "form-control",'placeholder': 'Choose a password'}), min_length=6
-    )
     
-
 
 class SaveTime(forms.Form):
     hours=forms.DecimalField(max_digits=5, decimal_places=1,min_value=0,widget=forms.NumberInput(attrs={"class": "form-control"}))      
@@ -47,7 +14,7 @@ class SearchByDateForm(forms.Form):
     date = forms.DateField(widget=DateInputt(attrs={"class": "form-control"}))
 
 
-class WeeklyJurnalForm(forms.Form):
+class WeeklyJournalForm(forms.Form):
                 
      
      accomplished =forms.CharField(required=False,label="1. What have you accomplished this week?", widget=forms.Textarea(attrs={"class": "form-control"}))

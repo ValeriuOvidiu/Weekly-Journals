@@ -1,6 +1,5 @@
-{% extends "Charts/base.html" %}
+{% extends "WeeklyJournals/base.html" %}
 {% block content %}
-
 <div class="card" style="width: 20rem;position:absolute; top:70px; left:10px;z-index:1">
   <div class="card-body">
     <div class="list-group">
@@ -24,12 +23,12 @@
   <div class="card-header">
     <h1> {{user.first_name}} {{user.last_name}}</h1>
   </div>
-  {% if pageName == 'hours-worked' %}
-  {% include "Charts/profileIncludes/workedHoursPage.html" %}
+  {% if pageName == 'hours-worked' %} 
+  {% include "Charts\workedHoursPage.html" %}
   {% elif pageName == 'hours-slept' %}
-  {% include "Charts/profileIncludes/sleptHoursPage.html" %}
-  {% elif pageName == "weekly-jurnals" %}
-  {% include "Charts/profileIncludes/jurnalsPage.html" %}
+  {% include "Charts/sleptHoursPage.html" %}
+  {% elif pageName == "weekly-journals" %}
+  {% include "Charts/journalsPage.html" %}
   {% endif %}
 </div>
 {% endblock %}

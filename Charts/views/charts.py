@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from Charts.forms import SaveTime, SearchByDateForm
 
 
+
 class WorkedChartData(APIView):
     authentication_classes = []
     permission_classes = []
@@ -19,7 +20,7 @@ class WorkedChartData(APIView):
 
         if searched_date != "null":
             date_string = searched_date
-            format_string = "%Y-%m-%d"    
+            format_string = "%Y-%m-%d"
             date_object = datetime.strptime(date_string, format_string)
 
             current_date = date_object.date()
@@ -39,7 +40,7 @@ class WorkedChartData(APIView):
         reversed_last_100_days = list(reversed(last_100_days))
         daily_charts_data = [[0 for _ in range(100)] for _ in range(2)]
         i = 0
-        
+
         for dates in reversed_last_100_days:
             try:
                 check_date = HoursWorkedModel.objects.get(user=user, date=dates)
@@ -90,15 +91,15 @@ def worked_hours_save(request):
                 hours_worked.save()
             return redirect("profile", chartName="hours-worked")
 
-   
-def search_by_date(request,chartName):
+
+def search_by_date(request, chartName):
     if request.method == "POST":
         form = SearchByDateForm(request.POST)
         if form.is_valid():
-            date = form.cleaned_data["date"]   
+            date = form.cleaned_data["date"]
             date_string = date.strftime("%Y-%m-%d")  # Convert datetime.date to string
             request.session["date"] = date_string
-            return redirect("profile", chartName=chartName )      
+            return redirect("profile", chartName=chartName)
 
 
 class SleptChartData(APIView):
@@ -188,7 +189,8 @@ def slept_hours_save(request):
             return redirect("profile", chartName="hours-slept")
     return redirect("profile", chartName="hours-slept")
 
-class JurnalsChartData(APIView):
+
+class JournalsChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
@@ -214,7 +216,7 @@ class JurnalsChartData(APIView):
         week_days = [last_monday + timedelta(days=i) for i in range(7)]
         daily_work_data = [[0 for _ in range(7)] for _ in range(2)]
         i = 0
-     
+
         for dates in week_days:
             try:
                 check_date = HoursWorkedModel.objects.get(user=user, date=dates)
@@ -226,7 +228,7 @@ class JurnalsChartData(APIView):
                 daily_work_data[1][i] = 0
 
             i += 1
-        i=0
+        i = 0
         daily_sleep_data = [[0 for _ in range(7)] for _ in range(2)]
         for dates in week_days:
             try:
@@ -241,5 +243,5 @@ class JurnalsChartData(APIView):
             i += 1
 
         charts_data = [daily_work_data, daily_sleep_data]
-  
+
         return Response(charts_data)

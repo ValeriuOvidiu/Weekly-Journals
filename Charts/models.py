@@ -23,7 +23,7 @@ class Choices(models.Model):
         ('7', 'Call săptămânal - Proiecte personale')
     ))
 
-class WeeklyJurnalModel(models.Model):
+class WeeklyJournalModel(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     accomplished = models.TextField(max_length=255,default="")
     optional = models.TextField(max_length=255,default="")
@@ -37,5 +37,5 @@ class WeeklyJurnalModel(models.Model):
 
 class CalendarImageModel(models.Model):
     calendar = models.ImageField(upload_to='Charts/images')
-    jurnal=models.OneToOneField(WeeklyJurnalModel, on_delete=models.CASCADE)
+    journal=models.OneToOneField(WeeklyJournalModel, on_delete=models.CASCADE)  
     
