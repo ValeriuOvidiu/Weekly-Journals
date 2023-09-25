@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('Charts', '0002_hourssleptmodel'),
+        ('charts', '0002_hourssleptmodel'),
     ]
 
     operations = [
@@ -34,8 +34,8 @@ class Migration(migrations.Migration):
             name='CalendarImageModel',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('calendar', models.ImageField(upload_to='Charts/images')),
-                ('jurnal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Charts.weeklyjurnalmodel')),
+                ('calendar', models.ImageField(upload_to='charts/images')),
+                ('jurnal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='charts.weeklyjurnalmodel')),
             ],
         ),
     ]

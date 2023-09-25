@@ -1,4 +1,4 @@
-const endpoint = '/charts/journals_data/' + username + '/' + date  
+const endpoint = '/charts/journals_data/' + username + '/' + date
 let apiData = "test"
 const monthsOfYear = [
   { name: 'January', number: '01' },
@@ -27,39 +27,39 @@ $.ajax({
   url: endpoint,
   success: function (data) {
 
-    let daily_worked_data = data[0]
-    let week_slept_data = data[1]
+    let dailyWorkedData = data[0]
+    let weekSleptData = data[1]
     console.log(data, "ceva")
     const ctx = document.getElementById('dailyChart');
     const secondctx = document.getElementById('weekleyChart')
     const week = document.getElementById('week')
-    const weekTotalWork=document.getElementById('weekTotalWork')
-    const weekTotalSleep=document.getElementById('weekTotalSleep')
-    let weekTotalWork2=0
-    let weekTotalSleep2=0
-    for(let i=0;i<7;++i){
-      weekTotalWork2+=daily_worked_data[1][i]
-      weekTotalSleep2+=week_slept_data[1][i]
+    const weekTotalWork = document.getElementById('weekTotalWork')
+    const weekTotalSleep = document.getElementById('weekTotalSleep')
+    let weekTotalWork2 = 0
+    let weekTotalSleep2 = 0
+    for (let i = 0; i < 7; ++i) {
+      weekTotalWork2 += dailyWorkedData[1][i]
+      weekTotalSleep2 += weekSleptData[1][i]
     }
-    
-    weekTotalWork.innerHTML= "Week total worked hours = "+weekTotalWork2 
-    weekTotalSleep.innerHTML= "Week total slept hours = "+weekTotalSleep2
 
-    let endDate = daily_worked_data[0][6]
-    let beginingDate = daily_worked_data[0][0]
-    if (beginingDate.substring(5, 7) != daily_worked_data[0][6].substring(5, 7)) {
-      week.innerHTML = "This is the week " + beginingDate.substring(8) + " " + getMonthNameByNumber(beginingDate.substring(5, 7)) + '-' + endDate.substring(8) + " "+getMonthNameByNumber(endDate.substring(5, 7))
-    }else{
-      week.innerHTML="This is the week " + beginingDate.substring(8) +  '-' + endDate.substring(8) + " "+getMonthNameByNumber(endDate.substring(5, 7))
+    weekTotalWork.innerHTML = "Week total worked hours = " + weekTotalWork2
+    weekTotalSleep.innerHTML = "Week total slept hours = " + weekTotalSleep2
+
+    let endDate = dailyWorkedData[0][6]
+    let beginingDate = dailyWorkedData[0][0]
+    if (beginingDate.substring(5, 7) != dailyWorkedData[0][6].substring(5, 7)) {
+      week.innerHTML = "This is the week " + beginingDate.substring(8) + " " + getMonthNameByNumber(beginingDate.substring(5, 7)) + '-' + endDate.substring(8) + " " + getMonthNameByNumber(endDate.substring(5, 7))
+    } else {
+      week.innerHTML = "This is the week " + beginingDate.substring(8) + '-' + endDate.substring(8) + " " + getMonthNameByNumber(endDate.substring(5, 7))
     }
-    
+
     new Chart(ctx, {
       type: 'line',
       data: {
-        labels: daily_worked_data[0], // Aici pui etichetele pentru axa X (zilele)
+        labels: dailyWorkedData[0], // Aici pui etichetele pentru axa X (zilele)
         datasets: [{
           label: 'Hours Worked',
-          data: daily_worked_data[1],
+          data: dailyWorkedData[1],
           borderColor: 'rgba(75, 192, 192, 1)', // Culoarea liniei graficului
           fill: false // Dacă dorești să umpli zona sub grafic sau nu
         },]
@@ -71,10 +71,10 @@ $.ajax({
     new Chart(secondctx, {
       type: 'line',
       data: {
-        labels: week_slept_data[0], // Aici pui etichetele pentru axa X (zilele)
+        labels: weekSleptData[0], // Aici pui etichetele pentru axa X (zilele)
         datasets: [{
           label: 'Hours Slept',
-          data: week_slept_data[1],
+          data: weekSleptData[1],
           borderColor: 'rgba(75, 192, 192, 1)', // Culoarea liniei graficului
           fill: false // Dacă dorești să umpli zona sub grafic sau nu
         },]

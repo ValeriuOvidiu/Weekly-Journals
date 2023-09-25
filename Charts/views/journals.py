@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
-from Charts.models import (
+from charts.models import (
     HoursWorkedModel,
     HoursSleptModel,
     WeeklyJournalModel,
@@ -12,7 +12,7 @@ from Charts.models import (
 
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from Charts.forms import SaveTime, SearchByDateForm, WeeklyJournalForm
+from charts.forms import SaveTime, SearchByDateForm, WeeklyJournalForm
 
 
 def upload_journal(request):

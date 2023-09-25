@@ -7,13 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Charts', '0003_weeklyjurnalmodel_calendarimagemodel'),
+        ('charts', '0003_weeklyjurnalmodel_calendarimagemodel'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='calendarimagemodel',
             name='jurnal',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='Charts.weeklyjurnalmodel'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='charts.weeklyjurnalmodel'),
         ),
     ]

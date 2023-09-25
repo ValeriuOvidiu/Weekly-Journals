@@ -1,4 +1,4 @@
-{% extends "WeeklyJournals/base.html" %}
+{% extends "weekly_journals/base.html" %}
 {% block content %}
 <div class="card" style="width: 20rem;position:absolute; top:70px; left:10px;z-index:1">
   <div class="card-body">
@@ -24,11 +24,11 @@
     <h1> {{user.first_name}} {{user.last_name}}</h1>
   </div>
   {% if pageName == 'hours-worked' %} 
-  {% include "Charts\workedHoursPage.html" %}
+  {% include "charts\worked_hours_page.html" %}
   {% elif pageName == 'hours-slept' %}
-  {% include "Charts/sleptHoursPage.html" %}
+  {% include "charts/slept_hours_page.html" %}
   {% elif pageName == "weekly-journals" %}
-  {% include "Charts/journalsPage.html" %}
+  {% include "charts/journal_page.html" %}
   {% endif %}
 </div>
 {% endblock %}

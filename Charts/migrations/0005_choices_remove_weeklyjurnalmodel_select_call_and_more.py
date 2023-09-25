@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Charts', '0004_alter_calendarimagemodel_jurnal'),
+        ('charts', '0004_alter_calendarimagemodel_jurnal'),
     ]
 
     operations = [
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='weeklyjurnalmodel',
-            name='select_call',
-            field=models.ManyToManyField(to='Charts.choices'),
+            name='select_call',  
+            field=models.ManyToManyField(to='charts.choices'),
         ),
     ]

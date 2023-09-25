@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('Charts', '0005_choices_remove_weeklyjurnalmodel_select_call_and_more'),
+        ('charts', '0005_choices_remove_weeklyjurnalmodel_select_call_and_more'),
     ]
 
     operations = [

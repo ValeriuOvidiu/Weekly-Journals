@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
 from random import randrange
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render    
 
 from django.contrib.auth.models import User
-from Charts.models import WeeklyJournalModel, CalendarImageModel
-from Charts.forms import SaveTime, SearchByDateForm, WeeklyJournalForm
+from charts.models import WeeklyJournalModel, CalendarImageModel
+from charts.forms import SaveTime, SearchByDateForm, WeeklyJournalForm
 from accounts.forms import UserForm, CodeForm, LoginForm
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
-from Charts.views.journals import get_journal_data, get_last_monday
+from charts.views.journals import get_journal_data, get_last_monday
 
 
 def index(request):
@@ -43,7 +43,7 @@ def authentication_code(request):
     return render(request, "accounts/AuthenticationCode.html", context)
 
 
-def signUp_page(request):
+def sign_up_page(request):
     if request.user.is_authenticated:
         return redirect("profile", chartName="hours-worked")
     try:

@@ -5,8 +5,8 @@ $.ajax({
  url :'/charts/get_data_for_work_chart/'+username+'/'+date ,  
  success: function(data){  
 
-let daily_charts_data=data[0]
-let week_charts_data=data[1]  
+let dailyChartsData=data[0]
+let weekChartsData=data[1]  
 console.log(data)
 const ctx = document.getElementById('dailyChart');
 const secondctx=document.getElementById('weekleyChart')  
@@ -14,10 +14,10 @@ const secondctx=document.getElementById('weekleyChart')
 new Chart(ctx, {
 type: 'line',
 data: {
-labels: daily_charts_data[0], // Aici pui etichetele pentru axa X (zilele)
+labels: dailyChartsData[0], // Aici pui etichetele pentru axa X (zilele)
 datasets: [{
  label: 'Hours Worked',
- data: daily_charts_data[1],
+ data: dailyChartsData[1],
  borderColor: 'rgba(75, 192, 192, 1)', // Culoarea liniei graficului
  fill: false // Dacă dorești să umpli zona sub grafic sau nu
 },]
@@ -29,10 +29,10 @@ options: {
 new Chart(secondctx, {
 type: 'line',
 data: {
-labels: week_charts_data[0], // Aici pui etichetele pentru axa X (zilele)
+labels: weekChartsData[0], // Aici pui etichetele pentru axa X (zilele)
 datasets: [{
  label: 'Hours Worked',
- data: week_charts_data[1],
+ data: weekChartsData[1],
  borderColor: 'rgba(75, 192, 192, 1)', // Culoarea liniei graficului
  fill: false // Dacă dorești să umpli zona sub grafic sau nu
 },]

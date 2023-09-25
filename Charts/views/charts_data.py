@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
-from Charts.models import HoursWorkedModel, HoursSleptModel
+from charts.models import HoursWorkedModel, HoursSleptModel
 from django.contrib.auth.models import User
-from Charts.forms import SaveTime, SearchByDateForm
+from charts.forms import SaveTime, SearchByDateForm  
 
 
 

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',   
     'django.contrib.staticfiles',
-    'Charts',   
+    'charts',   
     'bootstrap5',
     "accounts",  
 ]
@@ -61,14 +61,14 @@ MIDDLEWARE = [
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  
    
-ROOT_URLCONF = 'WeeklyJournals.urls'  
+ROOT_URLCONF = 'weekly_journals.urls'  
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ os.path.join(BASE_DIR, 'WeeklyJournals','templates'),  # Directorul rădăcină al proiectului
+        'DIRS': [ os.path.join(BASE_DIR, 'weekly_journals','templates'),  # Directorul rădăcină al proiectului
             os.path.join(BASE_DIR, 'accounts', 'templates'),  # Directorul "templates" al aplicației "accounts"
-            os.path.join(BASE_DIR, 'Charts', 'templates',),  # Directorul "templates" al aplicației "charts"
+            os.path.join(BASE_DIR, 'charts', 'templates',),  # Directorul "templates" al aplicației "charts"
         ],     
         'APP_DIRS': True,
         'OPTIONS': {
@@ -82,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'WeeklyJournals.wsgi.application'
+WSGI_APPLICATION = 'weekly_journals.wsgi.application'
 
 
 # Database
@@ -142,8 +142,8 @@ MEDIA_URL= 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'   
 STATICFILES_DIRS = [
-    BASE_DIR / "Charts\static",     
-    BASE_DIR / "Charts/media"         
+    BASE_DIR / "charts\static",     
+    BASE_DIR / "charts/media"         
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')   
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'Charts\static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'charts\static')]

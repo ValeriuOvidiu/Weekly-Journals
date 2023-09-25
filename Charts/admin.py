@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Charts.models import HoursWorkedModel,HoursSleptModel,WeeklyJournalModel,CalendarImageModel,Choices
+from charts.models import HoursWorkedModel,HoursSleptModel,WeeklyJournalModel,CalendarImageModel,Choices
 
 # Register your models here.
 admin. site. register(HoursWorkedModel)      
