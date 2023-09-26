@@ -206,3 +206,6 @@ def profile(request, chartName):
 def logout_user(request):
     logout(request)
     return redirect("login_page")
+
+
+

@@ -23,3 +23,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(
          widget=forms.PasswordInput(attrs={"class": "form-control",'placeholder': 'Choose a password'}), min_length=6
     )
+
+class SearchUsersForm(forms.Form):
+    name=forms.CharField(widget=forms.TextInput(attrs={"class": "form-control",'placeholder': 'Search'}))
