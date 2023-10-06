@@ -1,0 +1,72 @@
+{% extends "weekly_journals/base.html" %}
+{% block content %}
+<div class="center">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Top Workers</h1>
+                </div>
+                <div class="card-body">
+
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Position</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Total Hours</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for worker in serialized_top_workers_results %}
+
+                        <tbody>
+                            <tr>
+                                <th scope="row">{{worker.index}}</th>
+                                <td><a href={% url 'other_user_profile' username=worker.username chart_name="hours-worked" %}>{{worker.first_name}} {{worker.last_name}}</a></td>
+                                <th scope="row">{{worker.total_worked_hours}}</th>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Top Sleeperes</h1>
+                </div>
+                <div class="card-body">
+
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Position</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Total Hours</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sleeper in serialized_top_sleepers_results %}
+
+                        <tbody>
+                            <tr>
+                                <th scope="row">{{sleeper.index}}</th>
+                                <td><a href={% url 'other_user_profile' username=sleeper.username chart_name="hours-slept" %}>{{sleeper.first_name}} {{sleeper.last_name}}</a></td>
+                                <th scope="row">{{sleeper.total_slept_hours}}</th>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
