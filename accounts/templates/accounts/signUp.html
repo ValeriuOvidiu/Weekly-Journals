@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SignUp</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+
+<body>
+  <div class="card" style="width: 30rem; position: absolute;top: 150px;left: 500px;">
+    <div class="card-header"><h1>Authenticate</h1></div>
+    <div class="card-body">
+      <form action="/authenticate_user" method="post">
+        {% csrf_token %}
+        <table>
+          {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+        <p id="p"></p>
+    </div>
+{% endfor %}
+        </table>
+        <p>{{error}}</p>
+        <button class="btn btn-primary mb-3" type="submit"> Send</button>
+      </form>
+      <div><div> For login click <a href="login_page">here</a> </div></div>
+    </div>
+  </div>
+</body>
+
+</html>
