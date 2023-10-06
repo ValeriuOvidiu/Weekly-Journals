@@ -1,4 +1,0 @@
-/node_modules/
-/ven/
-/media/
-/weekly_journals/settings.py
