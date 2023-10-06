@@ -3,7 +3,7 @@
 
   <div>
     Search by date
-    <form action={% url 'search_by_date' chartName=pageName %} method="post">
+    <form action={% url 'search_by_date' chart_name=pageName %} method="post">
       {% csrf_token %}
       <div class="row g-3">
         <div class="col">
@@ -33,27 +33,8 @@
       </div>
     </div>
 
-    {% if edit == "true" %}
-    <form action="/charts/upload_journal" method="post" id="jurnalForm">
-      {% csrf_token %}
-      {{WeeklyJurnalForm }}
 
-    </form>
-    <script>
-
-      Dropzone.options.myDropzone = {
-        maxFiles: 1
-      };
-    </script>
-    <label for="my-dropzone">7. What was your schedule this week (screenshot from Google Calendar)?</label>
-    <form action="/charts/upload_calendar_image" method="post" class="dropzone" id="my-dropzone"> {% csrf_token %}
-
-    </form>
-    <img style="width: 45rem; height: 30rem;" src="{{ calendar_image }}" alt="you did not add any image">
-    <button type="submit" form="jurnalForm">Submit</button>
-    {% else %}
-    <div class="row">  
-    <a class="btn btn-dark" role="button" href="/charts/edit" >edit</a> </div>      
+        
     <h6>
       <p>{{ questions.0 }}</p>
     </h6>
@@ -89,7 +70,7 @@
     </h6>
     <img style="width: 45rem; height: 30rem;" src="{{ calendar_image }}" alt="you did not add any image">
 
-    {% endif %}
+  
 
 
 

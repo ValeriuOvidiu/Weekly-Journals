@@ -101,17 +101,17 @@ def upload_calendar_image(request):
             calendar_image_model.save()
             print("e treaba")
 
-        return redirect("profile", chartName="weekly-journals")
+        return redirect("profile", chart_name="weekly-journals")
 
 
 def edit_journal(request):
     print("edit este gasit")
-    if "edit" in request.session and request.session.get("edit") == "false":
+    if "edit" in request.session and request.session.get("edit") == "false": 
         request.session["edit"] = "true"
     else:
         request.session["edit"] = "false"
 
-    return redirect("profile", chartName="weekly-journals")
+    return redirect("profile", chart_name="weekly-journals")
 
 
 def get_journal_data(user, last_monday):

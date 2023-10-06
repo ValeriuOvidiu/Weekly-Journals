@@ -3,7 +3,7 @@
     <div>
       <div>
         Search by date
-        <form action={% url 'search_by_date' chartName=pageName %} method="post">
+        <form action={% url 'search_by_date' chart_name=pageName %} method="post">
           {% csrf_token %}
           <div class="row g-3">
             <div class="col">  
@@ -18,7 +18,7 @@
       </div>
       <div>
         Save time
-      <form action="/charts/slept_hours_save" method="post">   
+      <form action="/charts/worked_hours_save" method="post">
         {% csrf_token %}
         <div class="row g-3">
           <div class="col">
@@ -33,16 +33,17 @@
         </div>
       </form>
     </div>
-    <p>Hours slept per day</p>
+    <p>Hours worked per day</p>
       <canvas id="dailyChart"></canvas>
     </div>
   </div>
-  <p>Hours slept per week</p>
+  <p>Hours worked per week</p>
   <canvas id="weekleyChart"></canvas>
 </div>
 <script>
   let username='{{user.username}}'
   let date='{{date}}'
 </script>
-<script src="{% static 'charts\slept_hours.js' %}"></script>    
+<script src="{% static 'charts\worked_hours.js' %}"></script> 
+   
   </div>

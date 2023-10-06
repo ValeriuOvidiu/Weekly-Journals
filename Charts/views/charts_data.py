@@ -89,17 +89,20 @@ def worked_hours_save(request):
             except:
                 hours_worked = HoursWorkedModel(user=user, hours=hours, date=date)
                 hours_worked.save()
-            return redirect("profile", chartName="hours-worked")
+            return redirect("profile", chart_name="hours-worked")
 
 
-def search_by_date(request, chartName):
+def search_by_date(request, chart_name):
     if request.method == "POST":
         form = SearchByDateForm(request.POST)
         if form.is_valid():
             date = form.cleaned_data["date"]
             date_string = date.strftime("%Y-%m-%d")  # Convert datetime.date to string
             request.session["date"] = date_string
-            return redirect("profile", chartName=chartName)
+            if "visited_user" in request.session:
+                username=request.session.get('visited_user')
+                return redirect("other_user_profile",username=username,chart_name=chart_name,)
+            return redirect("profile", chart_name=chart_name)  
 
 
 class SleptChartData(APIView):
@@ -132,11 +135,10 @@ class SleptChartData(APIView):
 
         last_100_days = [current_date - timedelta(days=i) for i in range(100)]
         reversed_last_100_days = list(reversed(last_100_days))
-        print(reversed_mondays)
-        print(reversed_last_100_days)
+        
         daily_charts_data = [[0 for _ in range(100)] for _ in range(2)]
         i = 0
-        print(user)
+        
         for dates in reversed_last_100_days:
             try:
                 check_date = HoursSleptModel.objects.get(user=user, date=dates)
@@ -155,7 +157,7 @@ class SleptChartData(APIView):
         for dates in last_100_days:
             week_total += daily_charts_data[1][i]
             if j < 14 and dates == mondays[j]:
-                print("a intrat")
+             
                 week_charts_data[0][j] = mondays[j]
                 week_charts_data[1][j] = week_total
                 week_total = 0
@@ -186,8 +188,8 @@ def slept_hours_save(request):
             except:
                 hours_worked = HoursSleptModel(user=user, hours=hours, date=date)
                 hours_worked.save()
-            return redirect("profile", chartName="hours-slept")
-    return redirect("profile", chartName="hours-slept")
+            return redirect("profile", chart_name="hours-slept")
+    return redirect("profile", chart_name="hours-slept")  
 
 
 class JournalsChartData(APIView):

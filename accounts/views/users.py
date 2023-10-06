@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from random import randrange
+from django.http import JsonResponse
 from django.shortcuts import redirect, render    
 
 from django.contrib.auth.models import User
@@ -9,17 +10,19 @@ from accounts.forms import UserForm, CodeForm, LoginForm
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
 from charts.views.journals import get_journal_data, get_last_monday
+from django.db.models import Q, Case, When, IntegerField, F, Value
+
 
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
     return render(request, "accounts/index.html")
 
 
 def login_page(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
     try:
         error = request.session.get("loginError")
         del request.session["loginError"]
@@ -32,20 +35,20 @@ def login_page(request):
 
 def authentication_code(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
     try:
         error = request.session.get("authenticationCodeError")
         del request.session["authenticationCodeError"]
        
     except:
         error = ""
-    context = {"form": CodeForm, "error": error}
-    return render(request, "accounts/AuthenticationCode.html", context)
+    context = {"form": CodeForm, "error": error}  
+    return render(request, "accounts/authentication_code.html", context)
 
 
 def sign_up_page(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
     try:
         error = request.session.get("authenticateError")
         del request.session["authenticateError"]
@@ -58,7 +61,7 @@ def sign_up_page(request):
 
 def authenticate_user(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
         form = UserForm(request.POST)
@@ -87,6 +90,7 @@ def authenticate_user(request):
                 request.session["first_name"] = first_name
                 request.session["last_name"] = last_name
                 confirmation_code = request.session.get("confirmation_code")
+                print(confirmation_code)
                 request.session.save()
                 return redirect("authentication_code")
         request.session["authenticateError"] = "Confirm password faild"
@@ -95,7 +99,7 @@ def authenticate_user(request):
 
 def create_user(request):
     if request.user.is_authenticated:
-        return redirect("profile", chartName="hours-worked")
+        return redirect("profile", chart_name="hours-worked")
 
     if request.method == "POST":
         form = CodeForm(request.POST)
@@ -131,7 +135,7 @@ def create_user(request):
                     del request.session["first_name"]
                     del request.session["last_name"]
                     login(request, user)
-                    return redirect("profile", chartName="hours-worked")
+                    return redirect("profile", chart_name="hours-worked")
 
     request.session["authenticationCodeError"] = "introduce the confirmation code again"
     return redirect("authentication_code")
@@ -139,7 +143,7 @@ def create_user(request):
 
 def login_user(request):
     if request.user.is_authenticated:
-        return (redirect("profile", chartName="hours-worked"),)
+        return (redirect("profile", chart_name="hours-worked"),)
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -153,24 +157,26 @@ def login_user(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("profile", chartName="hours-worked")
+                return redirect("profile", chart_name="hours-worked")
             else:
                 request.session["loginError"] = "Password incorect"
                 return redirect("login_page")
 
 
-def profile(request, chartName):
+def profile(request, chart_name):
     if not request.user.is_authenticated:
         return redirect("login_page")
 
     if "pageName" in request.session:
         del request.session["pageName"]
+    if "visited_user" in request.session:
+        del request.session["visited_user"]
 
     edit = "false"
     if "edit" in request.session and request.session.get("edit") == "false":
         edit = "true"
 
-    request.session["pageName"] = chartName
+    request.session["pageName"] = chart_name
     request.session.save()
     user = request.user
 
@@ -191,7 +197,7 @@ def profile(request, chartName):
         "timeForm": SaveTime,
         "SearchByDate": SearchByDateForm,
         "date": date,
-        "pageName": chartName,
+        "pageName": chart_name,
         "button_list": button_list,
         "WeeklyJurnalForm": WeeklyJournalForm(initial=initial_data),
         "calendar_image": calendar_image,
@@ -199,7 +205,7 @@ def profile(request, chartName):
         "answers": answers,
         "questions": journal_labels,
     }
-
+    print("ceva")
     return render(request, "accounts/Profile.html", context)
 
 
@@ -208,4 +214,71 @@ def logout_user(request):
     return redirect("login_page")
 
 
+def search_users(request, input_text):
+    words = input_text.split()
+    column_strings = {
+        'first_name': words,
+        'last_name': words,
+    }  
 
+    result_columns = {}
+
+    for column, strings in column_strings.items():
+        virtual_field = Value(0, output_field=IntegerField())
+        for word in strings:  
+            print(word)
+            
+            virtual_field = Case(
+                    When(Q(**{f'{column}__istartswith': word}) | Q(**{f'{column}__icontains': " " + word}), then=virtual_field + 2),
+                    When(Q(**{f'{column}__icontains': word}), then=virtual_field + 1),
+                    default=virtual_field,    
+                    output_field=IntegerField(), 
+                )
+          
+        result_columns[f'{column}_score'] = virtual_field     
+  
+    results = User.objects.annotate(
+        first_name_score=result_columns["first_name_score"],
+        last_name_score=result_columns["last_name_score"],
+        total=F("first_name_score") + F("last_name_score")
+    ).filter(total__gt=0).order_by('-total')
+
+    serialized_results = [{"username": user.username, "first_name": user.first_name, "last_name": user.last_name} for user in results]
+    return JsonResponse({"results": serialized_results})
+
+def other_user_profile(request,username,chart_name):
+    if not request.user.is_authenticated:
+        return redirect("login_page")
+    request.session['visited_user']=username
+    try:
+        print ("sau ceva")
+        print(username, "sau ceva")
+        user = User.objects.get(username=username)
+    except:
+        return redirect("profile",chart_name="hours-worked")
+
+    date = request.session.get("date", "null")
+    last_monday = get_last_monday(date)
+
+    calendar_image, answers, initial_data = get_journal_data(user, last_monday)
+
+    journal_labels = [field.label for field in WeeklyJournalForm()]
+    button_list = [
+        ["hours-worked", "Worked hours"],
+        ["hours-slept", "Slept hours"],
+        ["weekly-journals", "Weekly Journals"],
+    ]
+
+    context = {
+        "user": user,
+        "SearchByDate": SearchByDateForm,
+        "date": date,
+        "pageName": chart_name,
+        "button_list": button_list,
+        "calendar_image": calendar_image,
+        "answers": answers,
+        "questions": journal_labels,
+        "WeeklyJurnalForm": WeeklyJournalForm(initial=initial_data),
+    }
+    print("ceva din users")
+    return render(request, "accounts/profile_others.html", context)

@@ -143,7 +143,9 @@ MEDIA_URL= 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'   
 STATICFILES_DIRS = [
     BASE_DIR / "charts\static",     
-    BASE_DIR / "charts/media"         
+    BASE_DIR / "charts/media"    ,
+    BASE_DIR / "accounts\static",      
 ]
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')   
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'charts\static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'charts\static'),
+                    os.path.join(BASE_DIR, 'accounts\static')]    
