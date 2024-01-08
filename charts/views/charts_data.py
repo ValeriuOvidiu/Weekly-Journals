@@ -17,16 +17,13 @@ class WorkedChartData(APIView):
             user = User.objects.get(username=username)
         except:
             user = request.user
-
         if searched_date != "null":
             date_string = searched_date
             format_string = "%Y-%m-%d"
             date_object = datetime.strptime(date_string, format_string)
-
             current_date = date_object.date()
         else:
             current_date = datetime.today().date()
-
         num_of_mondays = 14
         today = current_date
         weekday = today.weekday()
@@ -34,13 +31,10 @@ class WorkedChartData(APIView):
         mondays = [
             last_monday - timedelta(weeks=week) for week in range(num_of_mondays)
         ]
-        reversed_mondays = list(reversed(mondays))
-
         last_100_days = [current_date - timedelta(days=i) for i in range(100)]
         reversed_last_100_days = list(reversed(last_100_days))
         daily_charts_data = [[0 for _ in range(100)] for _ in range(2)]
         i = 0
-
         for dates in reversed_last_100_days:
             try:
                 check_date = HoursWorkedModel.objects.get(user=user, date=dates)
@@ -85,7 +79,6 @@ def worked_hours_save(request):
                 check_date = HoursWorkedModel.objects.get(user=user, date=date)
                 check_date.hours = hours
                 check_date.save()
-
             except:
                 hours_worked = HoursWorkedModel(user=user, hours=hours, date=date)
                 hours_worked.save()
@@ -131,14 +124,10 @@ class SleptChartData(APIView):
         mondays = [
             last_monday - timedelta(weeks=week) for week in range(num_of_mondays)
         ]
-        reversed_mondays = list(reversed(mondays))
-
         last_100_days = [current_date - timedelta(days=i) for i in range(100)]
         reversed_last_100_days = list(reversed(last_100_days))
-        
         daily_charts_data = [[0 for _ in range(100)] for _ in range(2)]
         i = 0
-        
         for dates in reversed_last_100_days:
             try:
                 check_date = HoursSleptModel.objects.get(user=user, date=dates)
@@ -165,18 +154,14 @@ class SleptChartData(APIView):
             i -= 1
         week_charts_data[0] = list(reversed(week_charts_data[0]))
         week_charts_data[1] = list(reversed(week_charts_data[1]))
-
         charts_data = [daily_charts_data, week_charts_data]
-
         return Response(charts_data)
 
 
 def slept_hours_save(request):
     user = request.user
     if request.method == "POST":
-        # create a form instance and populate it with data from the request:
         form = SaveTime(request.POST)
-        # check whether it's valid:
         if form.is_valid():
             date = form.cleaned_data["date"]
             hours = form.cleaned_data["hours"]
@@ -184,7 +169,6 @@ def slept_hours_save(request):
                 check_date = HoursSleptModel.objects.get(user=user, date=date)
                 check_date.hours = hours
                 check_date.save()
-
             except:
                 hours_worked = HoursSleptModel(user=user, hours=hours, date=date)
                 hours_worked.save()
@@ -201,24 +185,19 @@ class JournalsChartData(APIView):
             user = User.objects.get(username=username)
         except:
             user = request.user
-
         if searched_date != "null":
             date_string = searched_date
             format_string = "%Y-%m-%d"
             date_object = datetime.strptime(date_string, format_string)
-
             current_date = date_object.date()
         else:
             current_date = datetime.today().date()
-
         today = current_date
         weekday = today.weekday()
         last_monday = today - timedelta(days=weekday)
-
         week_days = [last_monday + timedelta(days=i) for i in range(7)]
         daily_work_data = [[0 for _ in range(7)] for _ in range(2)]
         i = 0
-
         for dates in week_days:
             try:
                 check_date = HoursWorkedModel.objects.get(user=user, date=dates)
@@ -237,13 +216,10 @@ class JournalsChartData(APIView):
                 check_date = HoursSleptModel.objects.get(user=user, date=dates)
                 daily_sleep_data[0][i] = dates
                 daily_sleep_data[1][i] = check_date.hours
-
             except:
                 daily_sleep_data[0][i] = dates
                 daily_sleep_data[1][i] = 0
-
             i += 1
-
         charts_data = [daily_work_data, daily_sleep_data]
 
         return Response(charts_data)

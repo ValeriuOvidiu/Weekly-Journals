@@ -25,7 +25,7 @@
                         <tbody>
                             <tr>
                                 <th scope="row">{{worker.index}}</th>
-                                <td><a href={% url 'other_user_profile' username=worker.username chart_name="hours-worked" %}>{{worker.first_name}} {{worker.last_name}}</a></td>
+                                <td><a class="black_links" href={% url 'other_user_profile' username=worker.username chart_name="hours-worked" %}>{{worker.first_name}} {{worker.last_name}}</a></td>
                                 <th scope="row">{{worker.total_worked_hours}}</th>
                                 {% endfor %}
                         </tbody>

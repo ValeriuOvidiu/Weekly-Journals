@@ -1,15 +1,22 @@
+
 {% extends "weekly_journals/base.html" %}
+
 {% block content %}
+{% load static %}
+<script>
+ username = '{{other_user.username}}'
+  let date = '{{date}}'
+</script>
 <div class="card" style="width: 20rem;position:absolute; top:70px; left:10px;z-index:1">
   <div class="card-body">  
     <div class="list-group">
       {% for button in button_list %}  
       {% if button.0 == pageName %}
-      <a href={% url 'other_user_profile' username=user.username  chart_name=button.0 %} class="list-group-item list-group-item-action active">
+      <a href={% url 'other_user_profile' username=other_user.username  chart_name=button.0 %} class="list-group-item list-group-item-action active">
         {{button.1}}   
       </a>  
       {% else %}
-      <a  class="list-group-item list-group-item-action" href={% url 'other_user_profile' username=user.username  chart_name=button.0 %}>
+      <a  class="list-group-item list-group-item-action" href={% url 'other_user_profile' username=other_user.username  chart_name=button.0 %}>
         {{button.1}} 
       </a>
       {% endif %}
@@ -19,16 +26,47 @@
 
   </div>
 </div>
+
 <div class="card" style="width: 50rem;position:absolute; top:70px; left:350px;z-index:1">
   <div class="card-header">
-    <h1> {{user.first_name}} {{user.last_name}}</h1>
+    <div class="row">
+      <div class="col"><h1> {{other_user.first_name}} {{other_user.last_name}}</h1></div>
+      <div id="friendRequest" class="col">
+      </div>
+    </div>
+    
   </div>
+  <script src="{% static 'accounts\friend_request.js' %}"></script>
+  <script>
+    let loc2=window.location
+console.log(loc2, "proba")   
+let wsStart='ws://'
+if(loc2.protocol=='https:'){ 
+  wsStart='wss://'
+}
+let endpoint2=wsStart+loc2.host+'/ws/'+'{{other_user.id}}'  
+ 
+console.log(endpoint2)
+
+  const chatSocket = new WebSocket(endpoint2);
+
+  
+
+  chatSocket.onclose = function(e) {
+      console.log('close');
+  };
+  </script>
+ 
+  {% if friend %} 
   {% if pageName == 'hours-worked' %} 
   {% include "charts/other_profile_charts/other_worked_hours_page.html" %}
   {% elif pageName == 'hours-slept' %}
   {% include "charts/other_profile_charts/other_slept_hours_page.html" %}
   {% elif pageName == "weekly-journals" %}
   {% include "charts/other_profile_charts/other_journal_page.html" %}
+  {% endif %}
+  {% else %}
+  <div><h1>This profile is private</h1></div>
   {% endif %}
 </div>
 {% endblock %}

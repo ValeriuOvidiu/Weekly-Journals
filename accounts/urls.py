@@ -17,7 +17,12 @@ urlpatterns = [
     path("authentication_code",users.authentication_code,name="authentication_code"),
     path("search_users/<str:input_text>",users.search_users,name="search_users"),
     path("other_user_profile/<str:username>/<str:chart_name>",users.other_user_profile,name="other_user_profile"), 
-    path('home',home.home,name='home'),    
-    ]
+    path('home',home.home,name='home'),  
+    path("send_friend_requeast/<str:username>",users.send_friend_requeast,name="send_friend_requeast")  ,
+    path("get_friendship_status/<str:username>",users.get_friendship_status,name="get_friendship_status"),
+    path("friend_request_handler/<str:username>",users.friend_request_handler,name="friend_request_handler"),
+    path("unread_notification",users.unread_friend_request,name="unread_notification") ,
+    path('friend_request_page',users.friend_request_page,name='friend_request_page')        
+    ]     
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

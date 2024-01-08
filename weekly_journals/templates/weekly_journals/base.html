@@ -3,17 +3,20 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">   
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+  <script src="https://unpkg.com/feather-icons"></script>
 
   <title>Weekly Journals</title>
   {% load bootstrap5 %}
   {% bootstrap_css %}
   {% bootstrap_javascript %}
-  {% load static %} 
+  {% load static %}
+  {% load icons %}
+
   <style>
     .center {
       margin: auto;
@@ -21,48 +24,101 @@
       border: 3px solid #555653;
       padding: 10px;
     }
-    </style>
-  
+  </style>
+
   <style>
-    #dropzone { 
-        width: 200px;
-        height: 200px;
-        border: 2px dashed #ccc;
-        text-align: center;
-        padding: 20px;
-        cursor: pointer;
+    #dropzone {
+      width: 200px;
+      height: 200px;
+      border: 2px dashed #ccc;
+      text-align: center;
+      padding: 20px;
+      cursor: pointer;
     }
+
     #uploaded-image {
-        max-width: 100%;
-        max-height: 100%;
+      max-width: 100%;
+      max-height: 100%;
     }
-</style>
+  </style>
 </head>
+<link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 
 <body>
-  <nav class="navbar navbar-dark bg-dark">  
-    <div class="container-fluid">
-      <a class="nav-link active" aria-current="page" href="/home">Home</a> 
-      <a class="nav-link active" aria-current="page" href={% url 'profile' chart_name="hours-worked" %}>Profile</a>
-      
-      <form  role="search">
-        <input class="form-control me-2" style="width: 300px;" type="search" placeholder="Search" id="search" aria-label="Search">
-      
-      </form>
+<script>  
+  let username = '{{user.username}}'
+  let loc = window.location
+    console.log(loc, "proba")
+    let wsStart2 = 'ws://'
+    if (loc.protocol == 'https:') {
+      wsStart2 = 'wss://'
+    }
+    let endpointWs = wsStart2 + loc.host + '/ws/'
+</script>
+  <nav  class="navbar fixed-top navbar-dark bg-dark" >  
+    <div   class="container-fluid" >
+       <a href="/home" class="nav_icons">
+        <i data-feather="home"></i>
+      </a>
+      <a  href={% url 'profile' chart_name="hours-worked" %} class="nav_icons">
+        <i data-feather="user"></i>
+      </a>
+    <div   style="width: 300px;display: inline-block;">
+      <form role="search">
+        <input class="form-control me-2" style="width: 300px;" type="search" placeholder="Search" id="search"
+          aria-label="Search">
 
-      <a class="nav-link active" aria-current="page" href="/logout_user">Logout</a>
+      </form>
+      <div class="list-group" id="resultsList" style="width: 300px;position:absolute;z-index:4">
+      </div>
+      </div>
+      <a href="/friend_request_page" class="nav_icons">
+        <i data-feather="bell"></i>
+        <span id="notif" class="badge"></span>
+      </a>
+      <a  href="/logout_user" class="nav_icons">
+        <i data-feather="log-out"></i>
+      </a>
+      
+
     </div>
   </nav>
- 
-  
+
+
   {% block content %}
   {% endblock %}
- 
-      <div class="list-group" id="resultsList" style="width: 300px;position:absolute; top:47px; left:738px;z-index:1" >
-      </div>
-  
-    
+
+  <div class="list-group" id="resultsList" style="width: 300px;position:absolute; top:47px; left:738px;z-index:1">
+  </div>
+  <script>feather.replace()</script>
+
   <script src="{% static 'accounts\search_users.js' %}"></script>
+  <script src="{% static 'accounts\notification.js' %}"></script>
+
+  <script>
+    
+
+    console.log(endpointWs)
+
+    const chatSocket1 = new WebSocket(endpointWs+'{{user.id}}');
+    console.log(username, 'fffffffffffffff')  
+    chatSocket1.onmessage = function (e) {
+        
+      const messageInputDom = document.querySelector('#notif');
+      const data = JSON.parse(e.data);
+      if(data.message!=0){
+        messageInputDom.innerText =  data.message;
+
+      }
+
+
+    };
+
+
+    chatSocket1.onclose = function (e) {
+      console.log('close');
+    };
+  </script>
 
 </body>
 

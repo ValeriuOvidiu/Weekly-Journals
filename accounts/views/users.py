@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+import json
 from random import randrange
-from django.http import JsonResponse
+from django.http import  JsonResponse
 from django.shortcuts import redirect, render    
-
 from django.contrib.auth.models import User
-from charts.models import WeeklyJournalModel, CalendarImageModel
+from accounts.models import FriendsRequestModel
 from charts.forms import SaveTime, SearchByDateForm, WeeklyJournalForm
 from accounts.forms import UserForm, CodeForm, LoginForm
 from django.core.mail import send_mail
@@ -166,28 +166,22 @@ def login_user(request):
 def profile(request, chart_name):
     if not request.user.is_authenticated:
         return redirect("login_page")
-
     if "pageName" in request.session:
         del request.session["pageName"]
     if "visited_user" in request.session:
         del request.session["visited_user"]
-
     edit = "false"
     if "edit" in request.session and request.session.get("edit") == "false":
         edit = "true"
-
     request.session["pageName"] = chart_name
     request.session.save()
     user = request.user
-
     date = request.session.get("date", "null")
     last_monday = get_last_monday(date)
-
     calendar_image, answers, initial_data = get_journal_data(user, last_monday)
-
     journal_labels = [field.label for field in WeeklyJournalForm()]
     button_list = [
-        ["hours-worked", "Worked hours"],
+        ["hours-worked", "Worked hours"],  
         ["hours-slept", "Slept hours"],
         ["weekly-journals", "Weekly Journals"],
     ]
@@ -205,7 +199,6 @@ def profile(request, chart_name):
         "answers": answers,
         "questions": journal_labels,
     }
-    print("ceva")
     return render(request, "accounts/Profile.html", context)
 
 
@@ -220,21 +213,16 @@ def search_users(request, input_text):
         'first_name': words,
         'last_name': words,
     }  
-
     result_columns = {}
-
     for column, strings in column_strings.items():
         virtual_field = Value(0, output_field=IntegerField())
         for word in strings:  
-            print(word)
-            
             virtual_field = Case(
                     When(Q(**{f'{column}__istartswith': word}) | Q(**{f'{column}__icontains': " " + word}), then=virtual_field + 2),
                     When(Q(**{f'{column}__icontains': word}), then=virtual_field + 1),
                     default=virtual_field,    
                     output_field=IntegerField(), 
                 )
-          
         result_columns[f'{column}_score'] = virtual_field     
   
     results = User.objects.annotate(
@@ -251,25 +239,31 @@ def other_user_profile(request,username,chart_name):
         return redirect("login_page")
     request.session['visited_user']=username
     try:
-        print ("sau ceva")
-        print(username, "sau ceva")
-        user = User.objects.get(username=username)
+        other_user = User.objects.get(username=username)
     except:
         return redirect("profile",chart_name="hours-worked")
-
+    friendship_status_json=get_friendship_status(request,username).content.decode('utf-8')
+    
+    data_dict = json.loads(friendship_status_json)  # Parsați șirul JSON într-un dicționar Python
+    value_friendship_status = data_dict.get("friendship_status") 
+    friend=False
+    if value_friendship_status=="Friends":
+        friend=True
     date = request.session.get("date", "null")
     last_monday = get_last_monday(date)
-
-    calendar_image, answers, initial_data = get_journal_data(user, last_monday)
-
+    calendar_image, answers, initial_data = get_journal_data(other_user, last_monday)
     journal_labels = [field.label for field in WeeklyJournalForm()]
     button_list = [
         ["hours-worked", "Worked hours"],
         ["hours-slept", "Slept hours"],
         ["weekly-journals", "Weekly Journals"],
     ]
+    user=request.user
+    if user==other_user:
+        return redirect("profile",chart_name="hours-worked")
 
     context = {
+        "other_user": other_user,
         "user": user,
         "SearchByDate": SearchByDateForm,
         "date": date,
@@ -279,6 +273,96 @@ def other_user_profile(request,username,chart_name):
         "answers": answers,
         "questions": journal_labels,
         "WeeklyJurnalForm": WeeklyJournalForm(initial=initial_data),
+        "friend": friend
     }
-    print("ceva din users")
     return render(request, "accounts/profile_others.html", context)
+
+
+def send_friend_requeast(request,username):
+    user=request.user
+    other_user=User.objects.get(username=username)
+    user_is_sender=FriendsRequestModel.objects.filter(sender=user,receiver=other_user)
+    other_user_is_sender=FriendsRequestModel.objects.filter(sender=other_user,receiver=user)
+    if len(user_is_sender)==0 and len(other_user_is_sender)==0:
+        friend_requeast=FriendsRequestModel(sender=user,receiver=other_user,date=datetime.now())
+        friend_requeast.save()
+    elif len( user_is_sender)==1:  
+        user_is_sender[0].delete()
+    elif len(other_user_is_sender)==1:
+        other_user_is_sender[0].delete()
+    return JsonResponse({"succes": 'succes'})
+
+def get_friendship_status(request,username):
+    user=request.user
+    other_user=User.objects.get(username=username)
+    user_is_sender=FriendsRequestModel.objects.filter(sender=user,receiver=other_user)
+    other_user_is_sender=FriendsRequestModel.objects.filter(sender=other_user,receiver=user)
+    
+    if len(user_is_sender)==1 :
+        if user_is_sender[0].accepted:
+            request.session["friendship_status"]="Friends"
+            return JsonResponse({"friendship_status": "Friends"})
+        return JsonResponse({"friendship_status": "Cancel the friend request"})
+    elif len(other_user_is_sender)==1:
+        if other_user_is_sender[0].accepted:
+            request.session["friendship_status"]="Friends"
+            return JsonResponse({"friendship_status": "Friends"})
+        return JsonResponse({"friendship_status": "Accept"})
+    else:
+        return JsonResponse({"friendship_status": "Add"})   
+
+def friend_request_handler(request,username):  
+    user=request.user
+    other_user=User.objects.get(username=username)
+    user_is_sender=FriendsRequestModel.objects.filter(sender=user,receiver=other_user)
+    other_user_is_sender=FriendsRequestModel.objects.filter(sender=other_user,receiver=user)
+    if len( user_is_sender)==1:  
+        if  user_is_sender[0].accepted:
+            user_is_sender[0].delete()
+            return redirect ("other_user_profile",username=username,chart_name="hours-worked")
+        user_is_sender[0].accepted=True
+        user_is_sender[0].date=datetime.now()
+        user_is_sender[0].save()
+    elif len(other_user_is_sender)==1:
+        if  other_user_is_sender[0].accepted:
+            other_user_is_sender[0].delete()
+            return redirect ("other_user_profile",username=username,chart_name="hours-worked")
+        other_user_is_sender[0].accepted=True
+        other_user_is_sender[0].date=datetime.now()
+        other_user_is_sender[0].save()
+    else:
+        other_user_is_sender[0].save()
+    return redirect ("other_user_profile",username=username,chart_name="hours-worked")
+
+
+def unread_friend_request(request):
+    user=request.user
+    unread_notf=(FriendsRequestModel.objects.filter(receiver=user).filter(request_seen=False).filter(accepted=False)|FriendsRequestModel.objects.filter(sender=user).filter(accepted_seen=False).filter(accepted=True)).count()
+    return JsonResponse({"unread_notf": unread_notf})  
+
+def friend_request_page(request):
+            try:
+                user=request.user
+                friend_request=(FriendsRequestModel.objects.filter(receiver=user).filter(accepted=False)|FriendsRequestModel.objects.filter(sender=user).filter(accepted_seen=False).filter(accepted=True)).order_by("-id")
+                unread_friend_requests=(FriendsRequestModel.objects.filter(receiver=user).filter(request_seen=False).filter(accepted=False)|FriendsRequestModel.objects.filter(sender=user).filter(accepted_seen=False).filter(accepted=True)).count()
+                friend_request_list=[{"receiver_first_name": fr_request.receiver.first_name,"receiver_id":fr_request.receiver.id,
+                                    "sender_id":fr_request.sender.id,"receiver_username":fr_request.receiver.username,
+                                    "sender_username":fr_request.sender.username,  
+                                    "receiver_last_name": fr_request.receiver.last_name, "sender_first_name": fr_request.sender.first_name,
+                                    "sender_last_name": fr_request.sender.last_name,"date":fr_request.date.strftime('%Y-%m-%d %H:%M')} for fr_request in friend_request]
+                for rows in friend_request:
+                    if rows.sender==user:
+                        rows.accepted_seen=True
+                        rows.save()
+                    else:
+                        rows.request_seen=True
+                        rows.save()
+            
+            except:
+                friend_request_list=None
+                unread_friend_requests=0
+            context={
+               'friend_request' :friend_request_list,    
+               'unread_friend_requests':unread_friend_requests
+            }
+            return render(request, "accounts/friend_requests.html", context)

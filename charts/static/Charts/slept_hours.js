@@ -7,7 +7,6 @@ $.ajax({
 
 let dailyChartsData=data[0]
 let weekChartsData=data[1]
-console.log(data)
 const ctx = document.getElementById('dailyChart');
 const secondctx=document.getElementById('weekleyChart')  
 
@@ -43,8 +42,6 @@ options: {
 });
  },
  error:function(error){   
-   console.log(error)  
-   console.log("eeroereeee")
  }
 
 }) 

@@ -43,9 +43,7 @@ def upload_journal(request):
                 choices = Choices.objects.all()
                 for i in select_call:
                     for j in choices:
-                        print(j)
                         if j.description == i:
-                            print("ce faci")
                             journal_model.select_call.add(j)
                             journal_model.save()
 
@@ -63,9 +61,7 @@ def upload_journal(request):
                 choices = Choices.objects.all()
                 for i in select_call:
                     for j in choices:
-                        print(j)
                         if j.description == i:
-                            print("ce faci")
                             journal_model.select_call.add(j)
                             journal_model.save()
 
@@ -100,12 +96,10 @@ def upload_calendar_image(request):
             )
             calendar_image_model.save()
             print("e treaba")
-
         return redirect("profile", chart_name="weekly-journals")
 
 
 def edit_journal(request):
-    print("edit este gasit")
     if "edit" in request.session and request.session.get("edit") == "false": 
         request.session["edit"] = "true"
     else:

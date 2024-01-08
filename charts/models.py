@@ -14,13 +14,13 @@ class HoursSleptModel(models.Model):
     
 class Choices(models.Model):
   description = models.CharField(max_length=100,choices=(
-        ('1', 'Call săptămânal - Structură de decizie "if" / "else"'),
-        ('2', 'Call săptămânal - Structuri repetitive "while" / "for"'),
-        ('3', 'Call săptămânal - "Șiruri de numere"'),
-        ('4', 'Call săptămânal - "Matrice (Tablouri bidimensionale)"'),
-        ('5', 'Call săptămânal - Mindset'),
-        ('6', 'Call săptămânal - Simulări de interviuri'),
-        ('7', 'Call săptămânal - Proiecte personale')
+        ('1', 'Weekly Call - Decision Structure "if" / "else"'),
+        ('2', 'Weekly Call - Repetitive Structures "while" / "for"'),
+        ('3', 'Weekly Call - Number Arrays'),
+        ('4', 'Weekly Call - Matrices (Two-Dimensional Arrays)'),
+        ('5', 'Weekly Call - Mindset'),
+        ('6', 'Weekly Call - Interview Simulations'),
+        ('7', 'Weekly Call - Personal Projects')
     ))
 
 class WeeklyJournalModel(models.Model):

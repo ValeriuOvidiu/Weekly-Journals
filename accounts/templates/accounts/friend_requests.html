@@ -1,0 +1,17 @@
+{% extends "weekly_journals/base.html" %}
+{% block content %}
+<div class="card" style="width: 50rem;position:relative; top:60px; left:350px;z-index:1">
+    <div  class="card-body">
+        <ul id="friend_requests" class="list-group">
+
+        </ul>
+    </div>
+</div>
+{{ friend_request|json_script:"index" }}
+<script>
+       username='{{user.username}}'
+
+    let friendRequest=JSON.parse(document.getElementById('index').textContent)
+    let unreadFriendRequests="{{unread_friend_requests}}"
+</script>
+{% endblock %}
